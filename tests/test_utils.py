@@ -1,7 +1,7 @@
-from bcrypt import checkpw
+from unittest import TestCase
 from hashlib import sha256
 from re import search
-from unittest import TestCase
+from bcrypt import checkpw
 from utils import bcrypt_password, generate_apple_password, sha256_password
 
 
@@ -22,5 +22,5 @@ class Test_Utils(TestCase):
     def test_sha256_password(self):
         self.assertTrue(
             sha256_password(password=self.password)
-            == sha256(string=self.password.encode()).hexdigest()
+            == sha256(self.password.encode()).hexdigest()
         )
