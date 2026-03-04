@@ -1,26 +1,42 @@
+"""
+Utility functions for the password generator.
+"""
+
 from hashlib import sha256
 from random import choice
 from string import digits, ascii_lowercase
 from sys import stdin
-from bcrypt import hashpw, gensalt
-from getpass import getpass
 from argparse import ArgumentParser, Namespace
+from getpass import getpass
+from bcrypt import hashpw, gensalt
 from pyperclip import copy as pyperclip_copy
 
 from config import DEFAULT_SIZE
 
 def get_typed_password() -> str:
+    """
+    Get the password from the user input.
+    """
     return getpass()
 
 def get_stdin_password() -> str:
+    """
+    Get the password from standard input.
+    """
     return stdin.readline().strip()
 
 def generate_password(size: int, characters: str) -> str:
+    """
+    Generate a random password of the given size using the given characters.
+    """
     return "".join([choice(characters) for _ in range(size)])
 
 
 def generate_apple_password() -> str:
-    # zomvuw-2wufba-nyzzEx
+    """
+    Generate a password in the style of Apple's "strong" password generator.
+    e.g. zomvuw-2wufba-nyzzEx
+    """
     return "-".join(
         [
             generate_password(size=6, characters=digits + ascii_lowercase)
@@ -30,20 +46,32 @@ def generate_apple_password() -> str:
 
 
 def bcrypt_password(password: str) -> str:
+    """
+    Hash the password using bcrypt.
+    """
     return hashpw(password=password.encode(), salt=gensalt()).decode()
 
 
 def sha256_password(password: str) -> str:
+    """
+    Hash the password using sha256.
+    """
     return sha256(password.encode()).hexdigest()
 
 
 def show_results(results: dict[str, str]) -> None:
+    """
+    Show the results in a nice format.
+    """
     max_length: int = max([len(k) for k in results.keys()])
 
     for k, v in dict(sorted(results.items())).items():
         print(f"{k.title():<{max_length}}: {v}")
 
 def get_parser_args() -> Namespace:
+    """
+    Get the command line arguments.
+    """
     parser = ArgumentParser()
 
     parser.add_argument("--size", type=int, default=DEFAULT_SIZE)
@@ -58,4 +86,7 @@ def get_parser_args() -> Namespace:
     return parser.parse_args()
 
 def copy_password_clipboard(password) -> None:
+    """
+    Copy the password to the clipboard.
+    """
     pyperclip_copy(password)
