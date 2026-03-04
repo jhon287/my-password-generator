@@ -1,32 +1,17 @@
-from argparse import ArgumentParser, Namespace
-from getpass import getpass
-from sys import stdin
-
 import config
 import utils
 
 
 def main() -> None:
     results: dict[str, str] = {}
-
-    parser = ArgumentParser()
-
-    parser.add_argument("--size", type=int, default=config.DEFAULT_SIZE)
-    parser.add_argument("--from-stdin", action="store_true")
-    parser.add_argument("--ask-password", action="store_true")
-    parser.add_argument("--show-password", action="store_true")
-    parser.add_argument("--apple-style", action="store_true")
-    parser.add_argument("--bcrypt", action="store_true")
-    parser.add_argument("--sha256", action="store_true")
-
-    args: Namespace = parser.parse_args()
-
     characters: str = config.DIGITS + config.ASCII_LETTERS + config.SPECIAL_CHARACTERS
 
+    args: Namespace = utils.get_parser_args()
+
     if args.ask_password:
-        password: str = getpass()
+        password: str = utils.get_typed_password()
     elif args.from_stdin:
-        password: str = stdin.readline().strip()
+        password: str = utils.get_stdin_password()
     else:
         if args.apple_style:
             password: str = utils.generate_apple_password()
@@ -43,6 +28,9 @@ def main() -> None:
 
     if args.sha256:
         results.update({"hash": f"{utils.sha256_password(password=password)} (sha256)"})
+
+    if args.clipboard:
+        utils.copy_password_clipboard(password=password)
 
     utils.show_results(results=results)
 
