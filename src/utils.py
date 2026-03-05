@@ -11,7 +11,8 @@ from getpass import getpass
 from bcrypt import hashpw, gensalt
 from pyperclip import copy as pyperclip_copy
 
-from config import DEFAULT_SIZE
+from config import DEFAULT_SIZE, DIGITS, ASCII_LETTERS, SPECIAL_CHARACTERS
+
 
 def get_typed_password() -> str:
     """
@@ -19,13 +20,17 @@ def get_typed_password() -> str:
     """
     return getpass()
 
+
 def get_stdin_password() -> str:
     """
     Get the password from standard input.
     """
     return stdin.readline().strip()
 
-def generate_password(size: int, characters: str) -> str:
+
+def generate_password(
+    size: int, characters: str = DIGITS + ASCII_LETTERS + SPECIAL_CHARACTERS
+) -> str:
     """
     Generate a random password of the given size using the given characters.
     """
@@ -68,6 +73,7 @@ def show_results(results: dict[str, str]) -> None:
     for k, v in dict(sorted(results.items())).items():
         print(f"{k.title():<{max_length}}: {v}")
 
+
 def get_parser_args() -> Namespace:
     """
     Get the command line arguments.
@@ -84,6 +90,7 @@ def get_parser_args() -> Namespace:
     parser.add_argument("--clipboard", action="store_true")
 
     return parser.parse_args()
+
 
 def copy_password_clipboard(password) -> None:
     """

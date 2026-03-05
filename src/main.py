@@ -4,7 +4,6 @@ Main entry point for the password generator.
 
 from argparse import Namespace
 
-import config
 import utils
 
 
@@ -14,7 +13,6 @@ def main() -> None:
         - Get the password from the user input, standard input, or generate a random password.
     """
     results: dict[str, str] = {}
-    characters: str = config.DIGITS + config.ASCII_LETTERS + config.SPECIAL_CHARACTERS
 
     args: Namespace = utils.get_parser_args()
 
@@ -26,9 +24,7 @@ def main() -> None:
         if args.apple_style:
             password: str = utils.generate_apple_password()
         else:
-            password: str = utils.generate_password(
-                size=args.size, characters=characters
-            )
+            password: str = utils.generate_password(size=args.size)
 
     if args.show_password:
         results.update({"password": password})
